@@ -8,7 +8,7 @@ location:
     address: Perth Railway Station 
     latitude: -31.951798
     longitude: 115.860819
-registration_url:
+registration_url: https://osmcal.org/event/4934/
 commons_category: "Geogeeks 2026-07-05"
 homepage: true
 ---
@@ -20,7 +20,7 @@ before returning on the afternoon service.
 
 Book your train ticket at [transwa.wa.gov.au](https://transwa.wa.gov.au).
 
-* Outward: 09:25 from Perth City Station, Platform 3
-* Return: 15:55 from Pinjarra
+* Outward: 09:25 from Perth City Station, Platform 3. Arrives at Pinjarra at 10:42.
+* Return: 15:55 from Pinjarra. Arrives at Perth at 17:14.
 
 To stay in touch on the day, [join the Geogeeks Slack](https://join.slack.com/t/geogeeks/shared_invite/zt-13fnotoqb-YkyMTmvwZEB_nDUis_30hw).
