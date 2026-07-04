@@ -4,10 +4,10 @@ title: Australind Mapping Day Trip
 start_time: 2026-07-05 09:25
 end_time: 2026-07-05 17:14
 location:
-    name: Platform 3
-    address: Perth Railway Station 
-    latitude: -31.951798
-    longitude: 115.860819
+    name: Pinjarra Railway Station 
+    address: Fimmel Lane, Pinjarra
+    latitude: -32.628293
+    longitude: 115.879752
 registration_url: https://osmcal.org/event/4934/
 commons_category: "Geogeeks 2026-07-05"
 homepage: true
