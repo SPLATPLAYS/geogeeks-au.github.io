@@ -47,6 +47,7 @@ function commonsCallback(response) {
 };
 
 function commonsEntitiesCallback(response) {
+    document.querySelectorAll('.gallery-item-cached').forEach(el => el.remove());
     const photos = [];
     Object.keys(pages).forEach((key) => {
         const page = pages[key];
