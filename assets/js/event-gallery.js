@@ -4,7 +4,7 @@ let pages = null;
 let categoryTitle = null;
 if (gallery && gallery.dataset.commonsCategory) {
     categoryTitle = 'Category:' + gallery.dataset.commonsCategory;
-    jsonpcall({
+    const params = {
         action: "query",
         prop: "imageinfo",
         generator: "categorymembers",
@@ -12,9 +12,15 @@ if (gallery && gallery.dataset.commonsCategory) {
         iiurlwidth: "255",
         gcmtitle: categoryTitle,
         gcmlimit: 50,
-        gcmtype: 'file',
         callback: 'commonsCallback'
-    });
+    };
+    if (gallery.dataset.buildTime) {
+        params.gcmsort = 'timestamp';
+        params.gcmstart = gallery.dataset.buildTime;
+    } else {
+        params.gcmtype = 'file';
+    }
+    jsonpcall(params);
 }
 
 function jsonpcall(params) {
@@ -38,6 +44,9 @@ function commonsCallback(response) {
     Object.keys(pages).forEach((key) => {
         pageIds.push(pages[key].pageid);
     });
+    if (pageIds.length === 0) {
+        return;
+    }
     const mediaIds = pageIds.map(i => 'M' + i).join('|');
     jsonpcall({
         action: 'wbgetentities',
@@ -47,7 +56,19 @@ function commonsCallback(response) {
 };
 
 function commonsEntitiesCallback(response) {
-    document.querySelectorAll('.gallery-item-cached').forEach(el => el.remove());
+    const isIncremental = !!gallery.dataset.buildTime;
+
+    if (!isIncremental) {
+        document.querySelectorAll('.gallery-item-cached').forEach(el => el.remove());
+    }
+
+    const existingSrcs = new Set();
+    if (isIncremental) {
+        gallery.querySelectorAll('.gallery-item img').forEach(img => {
+            existingSrcs.add(img.src);
+        });
+    }
+
     const photos = [];
     Object.keys(pages).forEach((key) => {
         const page = pages[key];
@@ -79,6 +100,9 @@ function commonsEntitiesCallback(response) {
     photos.sort((a, b) => b.time.localeCompare(a.time));
 
     photos.forEach(photo => {
+        if (existingSrcs.has(photo.thumburl)) {
+            return;
+        }
         const link = document.createElement('a');
         const colspan = photo.landscape ? 2 : 3;
         link.classList.add(...['figure', 'col-md-' + colspan, 'gallery-item']);
