@@ -14,11 +14,10 @@ if (gallery && gallery.dataset.commonsCategory) {
         gcmlimit: 50,
         callback: 'commonsCallback'
     };
+    params.gcmtype = 'file';
     if (gallery.dataset.buildTime) {
         params.gcmsort = 'timestamp';
         params.gcmstart = gallery.dataset.buildTime;
-    } else {
-        params.gcmtype = 'file';
     }
     jsonpcall(params);
 }
@@ -89,7 +88,7 @@ function commonsEntitiesCallback(response) {
         }
 
         photos.push({
-            url: 'https://commons.wikimedia.org/wiki/' + categoryTitle + '#/media/' + page.title,
+            url: 'https://commons.wikimedia.org/wiki/' + categoryTitle + '#/media/' + encodeURIComponent(page.title),
             thumburl: page.imageinfo[0].thumburl,
             time: time,
             caption: caption,
@@ -97,7 +96,7 @@ function commonsEntitiesCallback(response) {
         });
     });
 
-    photos.sort((a, b) => b.time.localeCompare(a.time));
+    photos.sort((a, b) => a.time.localeCompare(b.time));
 
     photos.forEach(photo => {
         if (existingSrcs.has(photo.thumburl)) {
@@ -117,11 +116,18 @@ function commonsEntitiesCallback(response) {
 
         const image = document.createElement('img');
         image.src = photo.thumburl;
+        image.alt = photo.caption;
         image.classList.add(...['figure-img', 'img-fluid', 'rounded']);
 
         figure.append(image, figcaption);
         link.append(figure);
-        gallery.prepend(link);
+
+        const uploadLink = gallery.querySelector('.upload-link');
+        if (uploadLink) {
+            gallery.insertBefore(link, uploadLink);
+        } else {
+            gallery.appendChild(link);
+        }
     });
 
 }

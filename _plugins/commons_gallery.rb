@@ -2,6 +2,8 @@ require 'net/http'
 require 'json'
 require 'fileutils'
 require 'time'
+require 'uri'
+require 'cgi'
 
 module Jekyll
   class CommonsGalleryGenerator < Generator
@@ -232,9 +234,10 @@ module Jekyll
           '[No caption; please add one!]'
         end
 
+        encoded_title = CGI.escape(page['title'].to_s).gsub('+', '%20')
         photos << {
           page_title: page['title'],
-          url: "https://commons.wikimedia.org/wiki/Category:#{category}#/media/#{page['title']}",
+          url: "https://commons.wikimedia.org/wiki/Category:#{category}#/media/#{encoded_title}",
           thumburl: info['thumburl'],
           thumbheight: info['thumbheight'].to_i,
           thumbwidth: info['thumbwidth'].to_i,
@@ -249,7 +252,7 @@ module Jekyll
       colspan = p[:thumbheight] > p[:thumbwidth] ? '2' : '3'
       %(<a class="figure col-md-#{colspan} gallery-item gallery-item-cached" href="#{h(p[:url])}">
         <figure>
-          <img src="#{h(p[:thumburl])}" class="figure-img img-fluid rounded" loading="lazy">
+          <img src="#{h(p[:thumburl])}" class="figure-img img-fluid rounded" loading="lazy" alt="#{h(p[:caption])}">
           <figcaption><strong>#{p[:time]}: </strong>#{h(p[:caption])}</figcaption>
         </figure>
       </a>).gsub(/\n\s*/, '')
